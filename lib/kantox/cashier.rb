@@ -8,13 +8,21 @@ module Kantox
   module Cashier
     class Error < StandardError; end
 
+    class InputIsNotANumber < Error; end
+
     class ProductNotFound < Error; end
 
     DefaultRule = proc do |items_count, unit_price|
+      all_numbers = items_count.is_a?(Numeric) && unit_price.is_a?(Numeric)
+      raise InputIsNotANumber unless all_numbers
+
       items_count * unit_price
     end
 
     PricePercentDiscountRule = proc do |items_count, unit_price|
+      all_numbers = items_count.is_a?(Numeric) && unit_price.is_a?(Numeric)
+      raise InputIsNotANumber unless all_numbers
+
       if items_count >= 3
         new_price = (unit_price * 2) / 3
 
@@ -25,6 +33,9 @@ module Kantox
     end
 
     PriceDiscountRule = proc do |items_count, unit_price|
+      all_numbers = items_count.is_a?(Numeric) && unit_price.is_a?(Numeric)
+      raise InputIsNotANumber unless all_numbers
+
       if items_count >= 3
         next items_count * 4.50
       end
